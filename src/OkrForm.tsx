@@ -1,25 +1,52 @@
 import {Trash2} from "lucide-react";
-import {KeyResultType} from "./okr-types.ts";
+import {KeyResultType, OKRType} from "./okr-types.ts";
+import {useState} from "react";
 
 type OkrFormProps = {
-  setNewObjective :  React.Dispatch<React.SetStateAction<string>>,
-  keyResults : KeyResultType[],
-  setKeyResults : React.Dispatch<React.SetStateAction<KeyResultType[]>> ,
-  deleteKeyResults : (index : number) => void,
-  addNewKeyResult : () => void,
-  addObjective : () => void
+  keyResults: KeyResultType[],
+  setKeyResults: React.Dispatch<React.SetStateAction<KeyResultType[]>>,
+  setOkrs: React.Dispatch<React.SetStateAction<OKRType[]>>,
+  okrs: OKRType[],
+  newKeyResult: KeyResultType
 }
 
 export function OkrForm(
   {
-    setNewObjective,
     keyResults,
     setKeyResults,
-    deleteKeyResults,
-    addNewKeyResult,
-    addObjective
-  } : OkrFormProps
+    setOkrs,
+    okrs,
+    newKeyResult
+  }: OkrFormProps
 ) {
+
+  const [newObjective, setNewObjective] = useState<string>("");
+
+  function addObjective() {
+    let newOKR: OKRType = {
+      objective: newObjective,
+      keyResults: keyResults
+    }
+    setOkrs([...okrs, newOKR]);
+  }
+
+  function addNewKeyResult() {
+    setKeyResults([...keyResults, newKeyResult]);
+  }
+
+  function deleteKeyResults(index: number) {
+    if (keyResults.length > 1) {
+      keyResults.splice(index, 1);
+    } else {
+      keyResults[0].title = "";
+      keyResults[0].initialValue = 0;
+      keyResults[0].currentValue = 0;
+      keyResults[0].targetValue = 0;
+      keyResults[0].metrics = "";
+    }
+    setKeyResults([...keyResults])
+  }
+
   return (
     <div className="mx-8 my-4 flex flex-row">
       <div className="border-gray-300 border-2 px-4 py-8 space-y-4 rounded-md">
