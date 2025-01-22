@@ -1,18 +1,25 @@
 import {Trash2} from "lucide-react";
-import {KeyResultType, OKRType} from "./okr-types.ts";
+import {KeyResultType, OKRType} from "../okr-types.ts";
 import {useState} from "react";
+import {insertOKR} from "../db/okr-store.ts";
 
 type OkrFormProps = {
-  setOkrs: React.Dispatch<React.SetStateAction<OKRType[]>>,
+  setOkrs: React.Dispatch<React.SetStateAction<OKRType[] | null>>,
   okrs: OKRType[],
-  newKeyResult: KeyResultType
+}
+
+const newKeyResult: KeyResultType = {
+  title: "",
+  initialValue: 0,
+  currentValue: 0,
+  targetValue: 0,
+  metrics: "",
 }
 
 export function OkrForm(
   {
     setOkrs,
     okrs,
-    newKeyResult
   }: OkrFormProps
 ) {
 
@@ -21,9 +28,14 @@ export function OkrForm(
   function addObjective() {
     let newOKR: OKRType = {
       objective: newObjective,
-      keyResults: keyResults
+      keyResults: [...keyResults]
     }
-    setOkrs([...okrs, newOKR]);
+    insertOKR(newOKR).then(
+      () => {
+        setOkrs([...okrs, newOKR]);
+        setKeyResults([newKeyResult])
+      }
+    )
   }
 
   function addNewKeyResult() {
@@ -53,6 +65,7 @@ export function OkrForm(
             <input
               className="w-full px-1 py-2 border border-blue-400 focus:border-none rounded-md focus:outline-0 focus:ring-blue-500 focus:ring-1 "
               type="text"
+              value={newObjective}
               placeholder="Add Objective"
               onChange={(e) => setNewObjective(e.target.value)}/>
           </div>
