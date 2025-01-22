@@ -3,8 +3,6 @@ import {KeyResultType, OKRType} from "./okr-types.ts";
 import {useState} from "react";
 
 type OkrFormProps = {
-  keyResults: KeyResultType[],
-  setKeyResults: React.Dispatch<React.SetStateAction<KeyResultType[]>>,
   setOkrs: React.Dispatch<React.SetStateAction<OKRType[]>>,
   okrs: OKRType[],
   newKeyResult: KeyResultType
@@ -12,8 +10,6 @@ type OkrFormProps = {
 
 export function OkrForm(
   {
-    keyResults,
-    setKeyResults,
     setOkrs,
     okrs,
     newKeyResult
@@ -21,7 +17,7 @@ export function OkrForm(
 ) {
 
   const [newObjective, setNewObjective] = useState<string>("");
-
+  const [keyResults, setKeyResults] = useState<KeyResultType[]>([newKeyResult]);
   function addObjective() {
     let newOKR: OKRType = {
       objective: newObjective,
